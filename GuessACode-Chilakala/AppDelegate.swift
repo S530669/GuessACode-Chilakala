@@ -10,6 +10,8 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    static var code:CodeWord = CodeWord(n: 4)
 
     var window: UIWindow?
 

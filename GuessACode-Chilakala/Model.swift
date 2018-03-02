@@ -16,43 +16,46 @@ class CodeWord {
     var Code:[String] = []
     var Guess:[String] = []
     var OnSymbol:Int = 0
-    var Attempts:Int = 0
+    var Attempts:Int = 1
     var Status:String = ""
     
     init(n : Int){
         
         if n >= 4 {
             Count  = n
-            Symbols = ["A","B","C","D"]
-            for _ in 1 ... Symbols.count{
+            Symbols = ["Σ","Φ","Ψ","Ω","Ξ","Θ","ζ"]
+            for _ in 1 ... Count{
                 Code.append(Symbols[Int(arc4random_uniform(UInt32(Symbols.count)))])
             }
             
-        }
-        Attempts = 1
-        
+        } 
     }
     
     func addSymbol(str : String){
         
-        if OnSymbol == Code.count {
-        OnSymbol = 0
-        Status = "Guess completed \(noOfCorrectPositions) correct"
-            
+        if Guess.count <= Code.count {
+            Guess.append(str)
+            OnSymbol += 1
+            Status = "Attempt \(Attempts): \(Guess.count) guessed"
+            if Guess.count == Count {
+                Attempts += 1
+                OnSymbol = 0
+                Status = "Guess Complete: \(noOfCorrectPositions()) positions matched"
+            }
         }
-        else {
-        Guess.append(str)
-        OnSymbol += 1
-        Status = "Attempt\(Attempts): \(Guess.count) guessed"
+    }
+    
+    func undoSymbol(){
+        if Guess.count != 0 {
+            Guess.removeLast()
+            OnSymbol -= 1
+            Status = "Attempt \(Attempts): \(Guess.count) guessed"
         }
-        
-        
-        
     }
     
     func noOfCorrectPositions() -> Int {
         var i:Int = 0
-        for _ in 0..<Count{
+        for _ in 0..<Guess.count{
             if Guess[i] == Code[i]{
                 i += 1
             }
@@ -65,8 +68,20 @@ class CodeWord {
     }
     
     
-    func currentGuess() -> [String] {
-        return Guess
+    func currentGuess() -> String {
+        
+        var guessString = ""
+        for i in 0 ..< Guess.count
+        {
+            guessString += " \(Guess[i])"
+        }
+        for _ in Guess.count ..< Count
+        {
+           guessString += " - "
+        }
+        
+        return guessString
+        
     }
     
     func matches() -> Bool {
@@ -87,11 +102,11 @@ class CodeWord {
         Code = []
         Guess = []
         
-        for _ in 1...Symbols.count {
+        for _ in 1...Count {
             Code.append(Symbols[Int(arc4random_uniform(UInt32(Symbols.count)))])
             
         }
-        Count = 0
+        print(Code)
     }
     
     
